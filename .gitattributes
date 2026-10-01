@@ -1,0 +1,7 @@
+linux/flutter/generated_plugin_registrant.cc -merge -diff linguist-generated=true
+linux/flutter/generated_plugin_registrant.h -merge -diff linguist-generated=true
+linux/flutter/generated_plugins.cmake -merge -diff linguist-generated=true
+
+.metadata -merge -diff linguist-generated=true
+
+pubspec.lock -merge -diff linguist-generated=true
