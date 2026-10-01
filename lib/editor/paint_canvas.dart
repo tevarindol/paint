@@ -30,6 +30,9 @@ class _PaintCanvasState extends State<PaintCanvas> {
   }
 
   void _handlePanStart(DragStartDetails details) {
+    if (widget.selectedTool == ShapeType.dot) {
+      return;
+    }
     setState(() {
       _dragStart = details.localPosition;
       _dragCurrent = details.localPosition;
@@ -37,12 +40,18 @@ class _PaintCanvasState extends State<PaintCanvas> {
   }
 
   void _handlePanUpdate(DragUpdateDetails details) {
+    if (widget.selectedTool == ShapeType.dot) {
+      return;
+    }
     setState(() {
       _dragCurrent = details.localPosition;
     });
   }
 
   void _handlePanEnd(DragEndDetails details) {
+    if (widget.selectedTool == ShapeType.dot) {
+      return;
+    }
     final start = _dragStart;
     final current = _dragCurrent;
     setState(() {
@@ -60,10 +69,10 @@ class _PaintCanvasState extends State<PaintCanvas> {
     final tool = widget.selectedTool;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: tool == ShapeType.dot ? _handleTapDown : null,
-      onPanStart: tool == ShapeType.dot ? null : _handlePanStart,
-      onPanUpdate: tool == ShapeType.dot ? null : _handlePanUpdate,
-      onPanEnd: tool == ShapeType.dot ? null : _handlePanEnd,
+      onTapDown: _handleTapDown,
+      onPanStart: _handlePanStart,
+      onPanUpdate: _handlePanUpdate,
+      onPanEnd: _handlePanEnd,
       child: ColoredBox(
         color: Colors.white,
         child: CustomPaint(

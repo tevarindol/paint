@@ -23,9 +23,9 @@ class EditorMenu extends StatelessWidget {
         SubmenuButton(
           menuChildren: [
             for (final ShapeType tool in ShapeType.values)
-              MenuItemButton(
-                onPressed: () => onToolSelected(selectedTool == tool ? null : tool),
-                trailingIcon: selectedTool == tool ? const Icon(Icons.check) : null,
+              CheckboxMenuButton(
+                value: selectedTool == tool,
+                onChanged: (bool? selected) => onToolSelected(selected == true ? tool : null),
                 child: Text(tool.label),
               ),
           ],
