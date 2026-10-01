@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
-class EditorMenu extends StatelessWidget {
-  const EditorMenu({super.key, required this.onToolSelected});
+import 'shape/shape_type.dart';
 
-  final ValueChanged<String> onToolSelected;
+class EditorMenu extends StatelessWidget {
+  const EditorMenu({
+    super.key,
+    required this.selectedTool,
+    required this.onToolSelected,
+  });
+
+  final ShapeType? selectedTool;
+  final ValueChanged<ShapeType?> onToolSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +22,11 @@ class EditorMenu extends StatelessWidget {
         ),
         SubmenuButton(
           menuChildren: [
-            for (final tool in const ['Крапка', 'Лінія', 'Прямокутник', 'Еліпс'])
+            for (final ShapeType tool in ShapeType.values)
               MenuItemButton(
-                onPressed: () => onToolSelected(tool),
-                child: Text(tool),
+                onPressed: () => onToolSelected(selectedTool == tool ? null : tool),
+                trailingIcon: selectedTool == tool ? const Icon(Icons.check) : null,
+                child: Text(tool.label),
               ),
           ],
           child: const Text('Об\'єкти'),

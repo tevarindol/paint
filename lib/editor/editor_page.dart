@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'editor_menu.dart';
 import 'paint_canvas.dart';
+import 'shape/shape_type.dart';
 
 class EditorPage extends StatefulWidget {
   const EditorPage({super.key, required this.title});
@@ -13,10 +14,10 @@ class EditorPage extends StatefulWidget {
 }
 
 class _EditorPageState extends State<EditorPage> {
-  void _selectTool(String tool) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('Вибрано: $tool')));
+  ShapeType? selectedTool;
+
+  void _selectTool(ShapeType? tool) {
+    setState(() => selectedTool = tool);
   }
 
   @override
@@ -27,9 +28,9 @@ class _EditorPageState extends State<EditorPage> {
         children: [
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: EditorMenu(onToolSelected: _selectTool),
+            child: EditorMenu(selectedTool: selectedTool, onToolSelected: _selectTool),
           ),
-          const Expanded(child: PaintCanvas()),
+          Expanded(child: PaintCanvas(selectedTool: selectedTool)),
         ],
       ),
     );
