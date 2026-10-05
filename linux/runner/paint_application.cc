@@ -1,4 +1,4 @@
-#include "my_application.h"
+#include "paint_application.h"
 
 #include <flutter_linux/flutter_linux.h>
 #ifdef GDK_WINDOWING_X11
@@ -7,21 +7,21 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
-struct _MyApplication {
+struct _PaintApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
 };
 
-G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+G_DEFINE_TYPE(PaintApplication, paint_application, GTK_TYPE_APPLICATION)
 
 // Called when first Flutter frame received.
-static void first_frame_cb(MyApplication* self, FlView* view) {
+static void first_frame_cb(PaintApplication* self, FlView* view) {
   gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(view)));
 }
 
 // Implements GApplication::activate.
-static void my_application_activate(GApplication* application) {
-  MyApplication* self = MY_APPLICATION(application);
+static void paint_application_activate(GApplication* application) {
+  PaintApplication* self = PAINT_APPLICATION(application);
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
 
@@ -45,14 +45,14 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "paint");
+    gtk_header_bar_set_title(header_bar, "Paint");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "paint");
+    gtk_window_set_title(window, "Paint");
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  gtk_window_set_default_size(window, 900, 600);
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_dart_entrypoint_arguments(
@@ -79,10 +79,10 @@ static void my_application_activate(GApplication* application) {
 }
 
 // Implements GApplication::local_command_line.
-static gboolean my_application_local_command_line(GApplication* application,
+static gboolean paint_application_local_command_line(GApplication* application,
                                                   gchar*** arguments,
                                                   int* exit_status) {
-  MyApplication* self = MY_APPLICATION(application);
+  PaintApplication* self = PAINT_APPLICATION(application);
   // Strip out the first argument as it is the binary name.
   self->dart_entrypoint_arguments = g_strdupv(*arguments + 1);
 
@@ -100,49 +100,49 @@ static gboolean my_application_local_command_line(GApplication* application,
 }
 
 // Implements GApplication::startup.
-static void my_application_startup(GApplication* application) {
-  // MyApplication* self = MY_APPLICATION(object);
+static void paint_application_startup(GApplication* application) {
+  // PaintApplication* self = PAINT_APPLICATION(object);
 
   // Perform any actions required at application startup.
 
-  G_APPLICATION_CLASS(my_application_parent_class)->startup(application);
+  G_APPLICATION_CLASS(paint_application_parent_class)->startup(application);
 }
 
 // Implements GApplication::shutdown.
-static void my_application_shutdown(GApplication* application) {
-  // MyApplication* self = MY_APPLICATION(object);
+static void paint_application_shutdown(GApplication* application) {
+  // PaintApplication* self = PAINT_APPLICATION(object);
 
   // Perform any actions required at application shutdown.
 
-  G_APPLICATION_CLASS(my_application_parent_class)->shutdown(application);
+  G_APPLICATION_CLASS(paint_application_parent_class)->shutdown(application);
 }
 
 // Implements GObject::dispose.
-static void my_application_dispose(GObject* object) {
-  MyApplication* self = MY_APPLICATION(object);
+static void paint_application_dispose(GObject* object) {
+  PaintApplication* self = PAINT_APPLICATION(object);
   g_clear_pointer(&self->dart_entrypoint_arguments, g_strfreev);
-  G_OBJECT_CLASS(my_application_parent_class)->dispose(object);
+  G_OBJECT_CLASS(paint_application_parent_class)->dispose(object);
 }
 
-static void my_application_class_init(MyApplicationClass* klass) {
-  G_APPLICATION_CLASS(klass)->activate = my_application_activate;
+static void paint_application_class_init(PaintApplicationClass* klass) {
+  G_APPLICATION_CLASS(klass)->activate = paint_application_activate;
   G_APPLICATION_CLASS(klass)->local_command_line =
-      my_application_local_command_line;
-  G_APPLICATION_CLASS(klass)->startup = my_application_startup;
-  G_APPLICATION_CLASS(klass)->shutdown = my_application_shutdown;
-  G_OBJECT_CLASS(klass)->dispose = my_application_dispose;
+      paint_application_local_command_line;
+  G_APPLICATION_CLASS(klass)->startup = paint_application_startup;
+  G_APPLICATION_CLASS(klass)->shutdown = paint_application_shutdown;
+  G_OBJECT_CLASS(klass)->dispose = paint_application_dispose;
 }
 
-static void my_application_init(MyApplication* self) {}
+static void paint_application_init(PaintApplication* self) {}
 
-MyApplication* my_application_new() {
+PaintApplication* paint_application_new() {
   // Set the program name to the application ID, which helps various systems
   // like GTK and desktop environments map this running application to its
   // corresponding .desktop file. This ensures better integration by allowing
   // the application to be recognized beyond its binary name.
   g_set_prgname(APPLICATION_ID);
 
-  return MY_APPLICATION(g_object_new(my_application_get_type(),
+  return PAINT_APPLICATION(g_object_new(paint_application_get_type(),
                                      "application-id", APPLICATION_ID, "flags",
                                      G_APPLICATION_NON_UNIQUE, nullptr));
 }
