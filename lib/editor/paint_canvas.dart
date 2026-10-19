@@ -105,6 +105,7 @@ class _CanvasPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.clipRect(Offset.zero & size);
     for (final shape in _storage.shapes) {
       shape.paint(canvas);
     }
