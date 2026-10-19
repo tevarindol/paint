@@ -12,11 +12,18 @@ class LineShape extends Shape {
 
   @override
   void paintPreview(Canvas canvas) {
-    canvas.drawLine(start, end, _stroke(Colors.blue));
+    drawDashed(
+      canvas,
+      _stroke(Colors.black),
+      Path()
+        ..moveTo(start.dx, start.dy)
+        ..lineTo(end.dx, end.dy),
+    );
   }
 
   static Paint _stroke(Color color) =>
       Paint()
         ..color = color
+        ..style = PaintingStyle.stroke
         ..strokeWidth = 2;
 }
