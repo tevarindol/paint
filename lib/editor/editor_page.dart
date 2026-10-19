@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'editor_menu.dart';
 import 'editor_toolbar.dart';
@@ -17,8 +18,20 @@ class EditorPage extends StatefulWidget {
 class _EditorPageState extends State<EditorPage> {
   ShapeType? selectedTool;
 
+  @override
+  void initState() {
+    super.initState();
+    _updateTitle();
+  }
+
   void _selectTool(ShapeType? tool) {
     setState(() => selectedTool = tool);
+    _updateTitle();
+  }
+
+  void _updateTitle() {
+    final tool = selectedTool;
+    windowManager.setTitle(tool == null ? 'Paint' : 'Paint (${tool.label})');
   }
 
   @override

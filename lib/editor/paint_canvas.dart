@@ -58,7 +58,7 @@ class _PaintCanvasState extends State<PaintCanvas> {
       _dragStart = null;
       _dragCurrent = null;
     });
-    if (start == null || current == null || _storage.isFull) {
+    if (start == null || current == null) {
       return;
     }
     _storage.add(_buildShape(start, current));
@@ -105,8 +105,8 @@ class _CanvasPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (final Shape? shape in _storage.shapes) {
-      shape?.paint(canvas);
+    for (final shape in _storage.shapes) {
+      shape.paint(canvas);
     }
     final start = dragStart;
     final current = dragCurrent;
