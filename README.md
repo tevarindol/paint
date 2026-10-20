@@ -17,17 +17,54 @@ Toolbar з кнопками-іконками та підказками служ�
 
 ```mermaid
 classDiagram
-    PaintApp --> EditorPage
+    class ShapeType {
+        <<enumeration>>
+        dot
+        line
+        rectangle
+        ellipse
+        +String label
+    }
+    class Shape {
+        <<abstract>>
+        +Offset start
+        +Offset end
+        +drawDashed(Canvas, Paint, Path)
+        +paint(Canvas)
+        +paintPreview(Canvas)
+    }
+    class CanvasShapes {
+        +List~Shape~ shapes
+        +int count
+        +add(Shape)
+    }
+    class ChangeNotifier {
+        <<abstract>>
+        +notifyListeners()
+    }
+    class DotShape
+    class LineShape
+    class RectangleShape
+    class EllipseShape
+    class PaintCanvas
+    class _CanvasPainter
+    class EditorPage
+    class EditorMenu
+    class EditorToolbar
+    class PaintApp
+
+    PaintApp --> EditorPage : home
     EditorPage --> EditorMenu
     EditorPage --> EditorToolbar
     EditorPage --> PaintCanvas
-    EditorToolbar --> ShapeType
-    PaintCanvas --> ShapeType
-    PaintCanvas *-- CanvasShapes
-    PaintCanvas --> _CanvasPainter
-    _CanvasPainter --> Shape
-    CanvasShapes o-- Shape
-    Shape --> ShapeType
+    EditorToolbar ..> ShapeType : tool icons
+    PaintCanvas ..> ShapeType : selectedTool
+    PaintCanvas *-- CanvasShapes : _storage
+    PaintCanvas ..> _CanvasPainter : створює
+    _CanvasPainter ..> Shape : paint()/paintPreview()
+    CanvasShapes --|> ChangeNotifier : extends
+    CanvasShapes o-- "0..*" Shape : shapes
+    Shape ..> ShapeType : factory Shape.of()
     Shape <|-- DotShape
     Shape <|-- LineShape
     Shape <|-- RectangleShape
