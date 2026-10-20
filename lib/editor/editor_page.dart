@@ -42,7 +42,7 @@ class _EditorPageState extends State<EditorPage> {
         children: [
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: const EditorMenu(),
+            child: EditorMenu(selectedTool: selectedTool, onToolSelected: _selectTool),
           ),
           EditorToolbar(selectedTool: selectedTool, onToolSelected: _selectTool),
           Expanded(child: PaintCanvas(selectedTool: selectedTool)),
