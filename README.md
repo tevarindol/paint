@@ -26,6 +26,7 @@ classDiagram
         circleLine
         cube
         +String label
+        +IconData icon
         +bool usesDrag
     }
     class Shape {

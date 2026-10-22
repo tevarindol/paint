@@ -12,19 +12,10 @@ class EditorToolbar extends StatelessWidget {
   final ShapeType? selectedTool;
   final ValueChanged<ShapeType?> onToolSelected;
 
-  static IconData _iconFor(ShapeType type) => switch (type) {
-    ShapeType.dot => Icons.trip_origin,
-    ShapeType.line => Icons.horizontal_rule,
-    ShapeType.rectangle => Icons.crop_square,
-    ShapeType.ellipse => Icons.panorama_fish_eye,
-    ShapeType.circleLine => Icons.timeline,
-    ShapeType.cube => Icons.view_in_ar,
-  };
-
   Widget _buildButton(ColorScheme colorScheme, ShapeType tool) {
     final selected = selectedTool == tool;
     return IconButton(
-      icon: Icon(_iconFor(tool)),
+      icon: Icon(tool.icon),
       tooltip: tool.label,
       isSelected: selected,
       onPressed: () => onToolSelected(selected ? null : tool),
