@@ -23,11 +23,12 @@ class _PaintCanvasState extends State<PaintCanvas> {
 
   bool get _isDragTool {
     final tool = widget.editor.selectedTool;
-    return tool != null && tool != ShapeType.dot;
+    return tool != null && tool.usesDrag;
   }
 
   void _handleTapDown(TapDownDetails details) {
-    if (widget.editor.selectedTool != ShapeType.dot) {
+    final tool = widget.editor.selectedTool;
+    if (tool == null || tool.usesDrag) {
       return;
     }
     final position = details.localPosition;

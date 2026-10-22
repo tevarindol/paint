@@ -26,6 +26,7 @@ classDiagram
         circleLine
         cube
         +String label
+        +bool usesDrag
     }
     class Shape {
         <<abstract>>
@@ -72,11 +73,16 @@ classDiagram
     EditorPage *-- EditorController : створює/знищує
     EditorController --|> ChangeNotifier : extends
     EditorController *-- CanvasShapes : володіє
+    EditorController ..> Shape : addShape()
+    EditorPage ..> ShapeType : label у заголовку вікна
     EditorPage --> EditorMenu
     EditorPage --> EditorToolbar
     EditorPage --> PaintCanvas
-    PaintCanvas ..> EditorController : editor
+    EditorMenu ..> ShapeType : чекбокси за label
     EditorToolbar ..> ShapeType : tool icons
+    PaintCanvas ..> EditorController : editor
+    PaintCanvas ..> ShapeType : usesDrag
+    PaintCanvas ..> _CanvasPainter : створює
     _CanvasPainter ..> Shape : paint()/paintPreview()
     CanvasShapes --|> ChangeNotifier : extends
     CanvasShapes o-- "0..*" Shape : shapes
