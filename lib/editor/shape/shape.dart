@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'circle_line_shape.dart';
+import 'cube_shape.dart';
 import 'dot_shape.dart';
 import 'ellipse_shape.dart';
 import 'line_shape.dart';
@@ -23,6 +25,8 @@ abstract class Shape {
         ShapeType.line => LineShape(start: start, end: end ?? start),
         ShapeType.rectangle => RectangleShape(start: start, end: end ?? start),
         ShapeType.ellipse => EllipseShape(start: start, end: end ?? start),
+        ShapeType.circleLine => CircleLineShape(start: start, end: end ?? start),
+        ShapeType.cube => CubeShape(start: start, end: end ?? start),
       };
 
   void drawDashed(Canvas canvas, Paint paint, Path path) {

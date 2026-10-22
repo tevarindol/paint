@@ -1,10 +1,18 @@
-enum ShapeType { dot, line, rectangle, ellipse }
+import 'package:flutter/material.dart';
 
-extension ShapeTypeLabel on ShapeType {
-  String get label => switch (this) {
-    ShapeType.dot => 'Крапка',
-    ShapeType.line => 'Лінія',
-    ShapeType.rectangle => 'Прямокутник',
-    ShapeType.ellipse => 'Еліпс',
-  };
+enum ShapeType {
+  dot('Крапка', icon: Icons.trip_origin, usesDrag: false),
+  line('Лінія', icon: Icons.horizontal_rule),
+  rectangle('Прямокутник', icon: Icons.crop_square),
+  ellipse('Еліпс', icon: Icons.panorama_fish_eye),
+  circleLine('Лінія з кружечками', icon: Icons.timeline),
+  cube('Каркас куба', icon: Icons.view_in_ar);
+
+  const ShapeType(this.label, {required this.icon, this.usesDrag = true});
+
+  final String label;
+
+  final IconData icon;
+
+  final bool usesDrag;
 }

@@ -1,36 +1,42 @@
 import 'package:flutter/material.dart';
 
 import 'canvas_shapes.dart';
+import 'editor_controller.dart';
 import 'shape/shape.dart';
 import 'shape/shape_type.dart';
 
 class PaintCanvas extends StatefulWidget {
-  const PaintCanvas({super.key, required this.selectedTool});
+  const PaintCanvas({super.key, required this.editor});
 
-  final ShapeType? selectedTool;
+  final EditorController editor;
 
   @override
   State<PaintCanvas> createState() => _PaintCanvasState();
 }
 
 class _PaintCanvasState extends State<PaintCanvas> {
-  final CanvasShapes _storage = CanvasShapes();
-
   Offset? _dragStart;
   Offset? _dragCurrent;
 
-  Shape _buildShape(Offset start, Offset end) => Shape.of(widget.selectedTool!, start: start, end: end);
+  Shape _buildShape(Offset start, Offset end) =>
+      Shape.of(widget.editor.selectedTool!, start: start, end: end);
+
+  bool get _isDragTool {
+    final tool = widget.editor.selectedTool;
+    return tool != null && tool.usesDrag;
+  }
 
   void _handleTapDown(TapDownDetails details) {
-    if (widget.selectedTool != ShapeType.dot) {
+    final tool = widget.editor.selectedTool;
+    if (tool == null || tool.usesDrag) {
       return;
     }
     final position = details.localPosition;
-    _storage.add(_buildShape(position, position));
+    widget.editor.addShape(_buildShape(position, position));
   }
 
   void _handlePanStart(DragStartDetails details) {
-    if (widget.selectedTool == ShapeType.dot) {
+    if (!_isDragTool) {
       return;
     }
     setState(() {
@@ -40,7 +46,7 @@ class _PaintCanvasState extends State<PaintCanvas> {
   }
 
   void _handlePanUpdate(DragUpdateDetails details) {
-    if (widget.selectedTool == ShapeType.dot) {
+    if (!_isDragTool) {
       return;
     }
     setState(() {
@@ -49,7 +55,7 @@ class _PaintCanvasState extends State<PaintCanvas> {
   }
 
   void _handlePanEnd(DragEndDetails details) {
-    if (widget.selectedTool == ShapeType.dot) {
+    if (!_isDragTool) {
       return;
     }
     final start = _dragStart;
@@ -61,12 +67,11 @@ class _PaintCanvasState extends State<PaintCanvas> {
     if (start == null || current == null) {
       return;
     }
-    _storage.add(_buildShape(start, current));
+    widget.editor.addShape(_buildShape(start, current));
   }
 
   @override
   Widget build(BuildContext context) {
-    final tool = widget.selectedTool;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: _handleTapDown,
@@ -77,8 +82,8 @@ class _PaintCanvasState extends State<PaintCanvas> {
         color: Colors.white,
         child: CustomPaint(
           painter: _CanvasPainter(
-            storage: _storage,
-            tool: widget.selectedTool,
+            storage: widget.editor.shapes,
+            tool: widget.editor.selectedTool,
             dragStart: _dragStart,
             dragCurrent: _dragCurrent,
           ),
