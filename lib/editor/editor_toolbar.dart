@@ -17,6 +17,8 @@ class EditorToolbar extends StatelessWidget {
     ShapeType.line => Icons.horizontal_rule,
     ShapeType.rectangle => Icons.crop_square,
     ShapeType.ellipse => Icons.panorama_fish_eye,
+    ShapeType.circleLine => Icons.timeline,
+    ShapeType.cube => Icons.view_in_ar,
   };
 
   Widget _buildButton(ColorScheme colorScheme, ShapeType tool) {

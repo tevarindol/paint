@@ -23,6 +23,8 @@ classDiagram
         line
         rectangle
         ellipse
+        circleLine
+        cube
         +String label
     }
     class Shape {
@@ -32,6 +34,15 @@ classDiagram
         +drawDashed(Canvas, Paint, Path)
         +paint(Canvas)
         +paintPreview(Canvas)
+    }
+    class EditorController {
+        -CanvasShapes _shapes
+        -ShapeType _selectedTool
+        +ShapeType selectedTool
+        +CanvasShapes shapes
+        +selectTool(ShapeType)
+        +addShape(Shape)
+        +destroy()
     }
     class CanvasShapes {
         +List~Shape~ shapes
@@ -44,8 +55,12 @@ classDiagram
     }
     class DotShape
     class LineShape
-    class RectangleShape
+    class RectangleShape {
+        +bool filled
+    }
     class EllipseShape
+    class CircleLineShape
+    class CubeShape
     class PaintCanvas
     class _CanvasPainter
     class EditorPage
@@ -54,13 +69,14 @@ classDiagram
     class PaintApp
 
     PaintApp --> EditorPage : home
+    EditorPage *-- EditorController : створює/знищує
+    EditorController --|> ChangeNotifier : extends
+    EditorController *-- CanvasShapes : володіє
     EditorPage --> EditorMenu
     EditorPage --> EditorToolbar
     EditorPage --> PaintCanvas
+    PaintCanvas ..> EditorController : editor
     EditorToolbar ..> ShapeType : tool icons
-    PaintCanvas ..> ShapeType : selectedTool
-    PaintCanvas *-- CanvasShapes : _storage
-    PaintCanvas ..> _CanvasPainter : створює
     _CanvasPainter ..> Shape : paint()/paintPreview()
     CanvasShapes --|> ChangeNotifier : extends
     CanvasShapes o-- "0..*" Shape : shapes
@@ -69,4 +85,10 @@ classDiagram
     Shape <|-- LineShape
     Shape <|-- RectangleShape
     Shape <|-- EllipseShape
+    Shape <|-- CircleLineShape
+    Shape <|-- CubeShape
+    CircleLineShape o-- LineShape : делегування
+    CircleLineShape o-- "2" EllipseShape : делегування
+    CubeShape o-- "2" RectangleShape : делегування
+    CubeShape o-- "4" LineShape : делегування
 ```

@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import 'shape.dart';
 
 class RectangleShape extends Shape {
-  const RectangleShape({required super.start, required super.end});
+  const RectangleShape({
+    required super.start,
+    required super.end,
+    this.filled = true,
+  });
+
+  final bool filled;
 
   Rect get _rect => Rect.fromCenter(
     center: start,
@@ -21,7 +27,9 @@ class RectangleShape extends Shape {
 
   @override
   void paint(Canvas canvas) {
-    canvas.drawRect(_rect, _fill);
+    if (filled) {
+      canvas.drawRect(_rect, _fill);
+    }
     canvas.drawRect(_rect, _stroke(Colors.black));
   }
 
