@@ -19,6 +19,8 @@ abstract class Shape {
   final Offset start;
   final Offset end;
 
+  Rect get bounds => Rect.fromPoints(start, end);
+
   factory Shape.of(ShapeType type, {required Offset start, Offset? end}) =>
       switch (type) {
         ShapeType.dot => DotShape(start: start),

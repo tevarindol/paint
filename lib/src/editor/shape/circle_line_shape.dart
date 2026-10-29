@@ -16,6 +16,9 @@ class CircleLineShape extends Shape {
   final EllipseShape _startDot;
   final EllipseShape _endDot;
 
+  @override
+  Rect get bounds => super.bounds.inflate(_radius);
+
   static EllipseShape _circle(Offset center) => EllipseShape(
     start: Offset(center.dx - _radius, center.dy - _radius),
     end: Offset(center.dx + _radius, center.dy + _radius),

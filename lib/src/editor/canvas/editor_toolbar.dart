@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'shape/shape_type.dart';
+import '../shape/shape_type.dart';
 
 class EditorToolbar extends StatelessWidget {
   const EditorToolbar({

@@ -17,6 +17,9 @@ class RectangleShape extends Shape {
     height: (end.dy - start.dy).abs() * 2,
   );
 
+  @override
+  Rect get bounds => _rect;
+
   Paint get _fill => Paint()..color = Colors.pink;
 
   Paint _stroke(Color color) =>

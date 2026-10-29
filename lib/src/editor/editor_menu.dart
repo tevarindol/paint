@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:paint/editor/shape/shape_type.dart';
+
+import 'shape/shape_type.dart';
 
 class EditorMenu extends StatelessWidget {
   const EditorMenu({
     super.key,
     required this.selectedTool,
     required this.onToolSelected,
+    required this.onOpen,
+    required this.onSave,
+    required this.onTable,
   });
 
   final ShapeType? selectedTool;
   final ValueChanged<ShapeType?> onToolSelected;
+  final VoidCallback onOpen;
+  final VoidCallback onSave;
+  final VoidCallback onTable;
 
   @override
   Widget build(BuildContext context) {
     return MenuBar(
       children: [
         SubmenuButton(
-          menuChildren: const [],
+          menuChildren: [
+            MenuItemButton(onPressed: onOpen, child: const Text('Відкрити…')),
+            MenuItemButton(onPressed: onSave, child: const Text('Зберегти як…')),
+          ],
           child: const Text('Файл'),
         ),
         SubmenuButton(
@@ -31,7 +41,12 @@ class EditorMenu extends StatelessWidget {
           child: const Text('Об\'єкти'),
         ),
         SubmenuButton(
-          menuChildren: const [],
+          menuChildren: [
+            MenuItemButton(
+              onPressed: onTable,
+              child: const Text('Таблиця'),
+            ),
+          ],
           child: const Text('Довідка'),
         ),
       ],

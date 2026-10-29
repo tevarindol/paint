@@ -1,10 +1,16 @@
 import 'package:flutter/foundation.dart';
 
-import 'canvas_shapes.dart';
+import 'canvas/canvas_shapes.dart';
 import 'shape/shape.dart';
 import 'shape/shape_type.dart';
 
 class EditorController extends ChangeNotifier {
+  EditorController._();
+
+  static EditorController? _instance;
+
+  factory EditorController() => _instance ??= EditorController._();
+
   CanvasShapes? _shapes = CanvasShapes();
   ShapeType? _selectedTool;
 
@@ -40,6 +46,7 @@ class EditorController extends ChangeNotifier {
     _shapes!.shapes.clear();
     _shapes = null;
     _selectedTool = null;
+    _instance = null;
     super.dispose();
   }
 }

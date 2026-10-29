@@ -15,6 +15,10 @@ Toolbar з кнопками-іконками та підказками служ�
 
 ## Діаграма класів
 
+Редактор і таблиця працюють в окремих рушіях Flutter. Пунктирний зв'язок між
+`TableWindowController` і `TableConnection` позначає обмін повідомленнями через
+`desktop_multi_window`, а не пряме посилання між об'єктами.
+
 ```mermaid
 classDiagram
     class ShapeType {
@@ -33,23 +37,65 @@ classDiagram
         <<abstract>>
         +Offset start
         +Offset end
+        +Rect bounds
         +drawDashed(Canvas, Paint, Path)
         +paint(Canvas)
         +paintPreview(Canvas)
     }
     class EditorController {
-        -CanvasShapes _shapes
-        -ShapeType _selectedTool
-        +ShapeType selectedTool
+        -static EditorController _instance
+        -CanvasShapes? _shapes
+        -ShapeType? _selectedTool
+        +ShapeType? selectedTool
         +CanvasShapes shapes
-        +selectTool(ShapeType)
+        +bool isDestroyed
+        +selectTool(ShapeType?)
         +addShape(Shape)
         +destroy()
+        +dispose()
     }
     class CanvasShapes {
         +List~Shape~ shapes
         +int count
+        +Shape? selected
         +add(Shape)
+        +select(Shape?)
+        +deleteSelected()
+        +replaceAll(Iterable~Shape~)
+    }
+    class ShapeCsv {
+        +typeOf(Shape)$
+        +encode(Iterable~Shape~)$
+        +decode(String)$
+    }
+    class TableWindowController {
+        +open()
+        +close()
+        +dispose()
+    }
+    class TableBridge {
+        +Map snapshot
+        +select(int)
+        +delete(int)
+        +dispose()
+    }
+    class TableConnection {
+        +rows
+        +int? selected
+        +start()
+        +select(int)
+        +delete(int)
+        +dispose()
+    }
+    class TableRowData~T~ {
+        +T key
+        +List~String~ cells
+    }
+    class ObjectTable~T~ {
+        +rows
+        +T? selected
+        +onSelect
+        +onDelete
     }
     class ChangeNotifier {
         <<abstract>>
@@ -66,19 +112,25 @@ classDiagram
     class PaintCanvas
     class _CanvasPainter
     class EditorPage
+    class _EditorPageState
     class EditorMenu
     class EditorToolbar
-    class PaintApp
+    class _EditorApp
+    class TableWindow
+    class _TableWindowState
 
-    PaintApp --> EditorPage : home
-    EditorPage *-- EditorController : створює/знищує
+    _EditorApp --> EditorPage : home
+    EditorPage ..> _EditorPageState : createState()
+    _EditorPageState --> EditorController : singleton
+    _EditorPageState *-- TableWindowController
+    _EditorPageState ..> ShapeCsv : відкриття і збереження
     EditorController --|> ChangeNotifier : extends
     EditorController *-- CanvasShapes : володіє
     EditorController ..> Shape : addShape()
-    EditorPage ..> ShapeType : label у заголовку вікна
-    EditorPage --> EditorMenu
-    EditorPage --> EditorToolbar
-    EditorPage --> PaintCanvas
+    _EditorPageState ..> ShapeType : label у заголовку вікна
+    _EditorPageState --> EditorMenu
+    _EditorPageState --> EditorToolbar
+    _EditorPageState --> PaintCanvas
     EditorMenu ..> ShapeType : чекбокси за label
     EditorToolbar ..> ShapeType : tool icons
     PaintCanvas ..> EditorController : editor
@@ -87,6 +139,19 @@ classDiagram
     _CanvasPainter ..> Shape : paint()/paintPreview()
     CanvasShapes --|> ChangeNotifier : extends
     CanvasShapes o-- "0..*" Shape : shapes
+    TableWindowController *-- TableBridge
+    TableBridge --> CanvasShapes : слухає і змінює
+    TableBridge ..> ShapeCsv : typeOf()
+    ShapeCsv ..> Shape : encode/decode
+    ShapeCsv ..> ShapeType
+    TableWindow ..> _TableWindowState : createState()
+    _TableWindowState *-- TableConnection
+    _TableWindowState --> ObjectTable : створює
+    TableConnection --|> ChangeNotifier : extends
+    TableConnection --> TableRowData : rows
+    ObjectTable --> TableRowData : rows
+    TableWindowController ..> TableConnection : snapshot / close
+    TableConnection ..> TableWindowController : ready / select / delete
     Shape ..> ShapeType : factory Shape.of()
     Shape <|-- DotShape
     Shape <|-- LineShape

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../editor_controller.dart';
+import '../shape/shape.dart';
+import '../shape/shape_type.dart';
 import 'canvas_shapes.dart';
-import 'editor_controller.dart';
-import 'shape/shape.dart';
-import 'shape/shape_type.dart';
 
 class PaintCanvas extends StatefulWidget {
   const PaintCanvas({super.key, required this.editor});
@@ -113,6 +113,17 @@ class _CanvasPainter extends CustomPainter {
     canvas.clipRect(Offset.zero & size);
     for (final shape in _storage.shapes) {
       shape.paint(canvas);
+    }
+    final selected = _storage.selected;
+    if (selected != null) {
+      selected.drawDashed(
+        canvas,
+        Paint()
+          ..color = Colors.blue
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5,
+        Path()..addRect(selected.bounds.inflate(6)),
+      );
     }
     final start = dragStart;
     final current = dragCurrent;
