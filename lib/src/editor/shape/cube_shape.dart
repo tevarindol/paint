@@ -31,6 +31,9 @@ class CubeShape extends Shape {
 
   final Rect _front;
   final Rect _back;
+
+  @override
+  Rect get bounds => _front.expandToInclude(_back);
   final RectangleShape _frontFace;
   final RectangleShape _backFace;
   final List<LineShape> _edges;
